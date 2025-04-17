@@ -1,20 +1,25 @@
-
 import os
 import keyring
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from cryptography.hazmat.primitives import padding
 from cryptography.hazmat.backends import default_backend
-import tkinter as tk
-from tkinter import filedialog
+import argparse
+
 
 SERVICE_NAME = "EncryptionSoftware"
 USERNAME = "EnkripcijskiKljuc"
 
-def get_or_create_key():
-
+def process_CMD():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-enc", "--encrypt", help = "Show Output")
+    parser.add_argument("-dec", "--decrypt", help = "Show Output")
+    parser.add_argument("-f", "--file", help = "Show Output")
+    args = parser.parse_args()
+    
+    if args.Output:
+        print("Displaying Output as: % s" % args.Output)
 
 def encrypt_file(file_path):
-    
     key = keyring.get_password(SERVICE_NAME, USERNAME)
     if key is None:
         key = os.urandom(32)  # AES-256 key
@@ -39,8 +44,12 @@ def encrypt_file(file_path):
     print(f"File encrypted successfully: {file_path}.enc")
 
 def decrypt_file(encrypted_path):
-    key = get_or_create_key()
-    
+    key = keyring.get_password(SERVICE_NAME, USERNAME)
+    if key is None:
+        key = os.urandom(32)  # AES-256 key
+        keyring.set_password(SERVICE_NAME, USERNAME, key.hex())
+    else:
+        key = bytes.fromhex(key)
     with open(encrypted_path, "rb") as f:
         iv = f.read(16)
         encrypted_data = f.read()
@@ -57,12 +66,7 @@ def decrypt_file(encrypted_path):
         f.write(decrypted_data)
     
     print(f"File decrypted successfully: {original_path}")
-    
-root = tk.Tk()
-root.withdraw()
 
-file_path = filedialog.askopenfilename()
-print(file_path)
 
 encryptedFIle = encrypt_file(file_path)
 
