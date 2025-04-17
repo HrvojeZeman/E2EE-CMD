@@ -43,6 +43,8 @@ def encrypt_file(file_path):
     
     print(f"File encrypted successfully: {file_path}.enc")
 
+
+# target_url = "https://locust-notable-terrier.ngrok-free.app/upload"
 def decrypt_file(encrypted_path):
     key = keyring.get_password(SERVICE_NAME, USERNAME)
     if key is None:
@@ -69,6 +71,7 @@ def decrypt_file(encrypted_path):
 
 
 encryptedFIle = encrypt_file(file_path)
+# TODO: missing file upload
 
     
     
