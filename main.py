@@ -11,16 +11,17 @@ SERVICE_NAME = "EncryptionSoftware"
 USERNAME = "EnkripcijskiKljuc"
 
 def get_or_create_key():
+
+
+def encrypt_file(file_path):
+    
     key = keyring.get_password(SERVICE_NAME, USERNAME)
     if key is None:
         key = os.urandom(32)  # AES-256 key
         keyring.set_password(SERVICE_NAME, USERNAME, key.hex())
     else:
         key = bytes.fromhex(key)
-    return key
-
-def encrypt_file(file_path):
-    key = get_or_create_key()
+        
     InitilaisationVector = os.urandom(16)
     cipher = Cipher(algorithms.AES(key), modes.CBC(InitilaisationVector), backend=default_backend())
     encryptor = cipher.encryptor()
